@@ -1,0 +1,2 @@
+ruby script/generate acts_as_relationable_migration
+rake db:migrate
