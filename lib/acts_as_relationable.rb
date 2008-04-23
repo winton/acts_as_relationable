@@ -1,22 +1,56 @@
 module ActiveRecord
   module Acts #:nodoc:
     module Relationable #:nodoc:
-
+      
+      MODELS = Dir[RAILS_ROOT + "/app/models/*.rb"].collect { |f| File.basename f, '.rb' }
+      
       def self.included(base)
         base.extend ClassMethods
       end
 
       module ClassMethods
-        def acts_as_relationable
-          acts_as_activatable
+        def acts_as_relationable(*types)
+          if types.empty? # Relationship model            
+            belongs_to :user
+
+            belongs_to :parent, :polymorphic => true
+            belongs_to :child,  :polymorphic => true
+            
+            MODELS.each do |m|
+              belongs_to "parent_#{m}".intern, :foreign_key => 'parent_id', :class_name => m.camelize
+              belongs_to "child_#{m}".intern,  :foreign_key => 'child_id',  :class_name => m.camelize
+            end
+          else
+            options = types.last.respond_to?(:keys) ? types.pop : {}
+            fields  = options[:fields] || []
+            fields  = [ fields ] unless fields.respond_to?(:flatten)
+
+            has_many :parent_relationships, :class_name => 'Relationship', :as => :child
+            has_many :child_relationships,  :class_name => 'Relationship', :as => :parent
           
-          after_create :create_child_relationships, :nullify_relationships
-          
-          has_many :parent_relationships, :class_name => 'Relationship', :foreign_key => 'child_id',
-                                          :conditions => [ 'relationships.child_type = ?',  self.to_s ]
-          
-          has_many :child_relationships, :class_name => 'Relationship', :foreign_key => 'parent_id',
-                                         :conditions => [ 'relationships.parent_type = ?', self.to_s ]
+            types.each do |type|
+              type   = type.to_s
+              select = "#{type}.*#{fields.empty? ? '' : ', '}" + fields.collect { |f| "relationships.#{f}" }.join(', ')
+            
+              has_many 'parent_' + type,
+                :select  => select, :through => :parent_relationships,
+                :source => :parent, :source_type => type.singularize.camelize
+            
+              has_many 'child_' + type,
+                :select  => select, :through => :child_relationships,
+                :source => :child,  :source_type => type.singularize.camelize
+              
+              self.class_eval do
+                define_method type do
+                  if self.class.to_s < type.singularize.camelize
+                    eval "self.child_#{type}"
+                  else
+                    eval "self.parent_#{type}"
+                  end
+                end
+              end
+            end
+          end
           
           include ActiveRecord::Acts::Relationable::InstanceMethods
           extend  ActiveRecord::Acts::Relationable::SingletonMethods
@@ -27,60 +61,6 @@ module ActiveRecord
       end
 
       module InstanceMethods
-        def relationships
-          return read_attribute(:relationships) if read_attribute(:relationships)
-          
-          ids_by_model = {}
-          self.child_relationships.each do |child|
-            ids_by_model[child.child_type] << child.child_id
-            ids_by_model[child.child_type].sort { |a, b| a[0] <=> b[0] }
-          end
-          ids_by_model
-        end
-        
-        def relationships=(ids_by_model)
-          write_attribute :relationships, ids_by_model
-        end
-        
-        def create_child_relationships
-          return unless relationships = read_attribute(:relationships)
-          
-          relationships.each do |child_type, ids|
-            ids.each do |child_id|
-              r = Relationship.create(
-                :parent       => self,
-                :child_type   => child_type,
-                :child_id     => child_id,
-                :user_id      => self.user_id
-              )
-            end
-          end
-          
-          self.child_relationships.reload
-        end
-        
-        def nullify_relationships
-          write_attribute :relationships, nil
-        end
-        
-        def removed_relationships(old=nil, current=nil)
-          unless old && current
-            return read_attribute(:removed_relationships) || {}
-          end
-          
-          removed = {}
-          
-          old.each do |key, value|
-            unless current[key]
-              removed[key] = old[key]
-            else
-              removed[key] = old[key] - current[key]
-            end
-          end
-          
-          write_attribute :removed_relationships, removed
-        end
-        
       end
     end
   end

@@ -1,0 +1,15 @@
+class Add<%= args.collect { |a| a[0] }.join('_and_').camelize %>ToRelationships < ActiveRecord::Migration
+  def self.up
+<% args.each do |arg| -%>
+    add_column :relationships, :<%= arg[0] %>, :<%= arg[1] %>
+    add_index  :relationships, :<%= arg[0] %>
+<% end -%>
+  end
+
+  def self.down
+<% args.each do |arg| -%>
+    remove_column :relationships, :<%= arg[0] %>
+    remove_index  :relationships, :<%= arg[0] %>
+<% end -%>
+  end
+end

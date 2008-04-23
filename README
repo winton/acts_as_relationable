@@ -1,2 +1,27 @@
-ruby script/generate acts_as_relationable_migration
-rake db:migrate
+Automatically creates a habtm relationship with optional relationship-specific fields.
+
+What's so great about this?
+  - habtm relationships using :through are a bitch
+  - all your relationships use a single table
+  - clean models
+
+Do this before anything
+  script/generate acts_as_relationable
+  rake db:migrate
+
+In the model (user.rb for example)
+  acts_as_relationable [ :friends, User ], :ratings   # (there should be a Rating model)
+  
+  u = User.find(:first)
+  self.friends << u
+  u.friends # [ self ]
+  
+Sometimes you have data that is unique to the relationship.
+For example, maybe some of your friends are family:
+  acts_as_relationable [ :friends, User ], :fields => :is_family, :family_name
+  
+  self.friends.first.is_family?   # true/false
+
+As you create relationship-specific fields, run this generator:
+  script/generate acts_as_relationable is_family:boolean family_name:string
+  rake db:migrate
