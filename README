@@ -9,19 +9,26 @@ Do this before anything
   script/generate acts_as_relationable
   rake db:migrate
 
-In the model (user.rb for example)
-  acts_as_relationable [ :friends, User ], :ratings   # (there should be a Rating model)
+In the model
+  acts_as_relationable :books   # (there should be a Book model)
   
-  u = User.find(:first)
-  self.friends << u
-  u.friends # [ self ]
+In the controller
+  b = Book.find :first
+  u = User.find :first
+  u.books << b
+  u.books # [ b ]
+  b.users # [ u ], assuming you put acts_as_relationable(:users) in your Book model
   
 Sometimes you have data that is unique to the relationship.
-For example, maybe some of your friends are family:
-  acts_as_relationable [ :friends, User ], :fields => :is_family, :family_name
-  
-  self.friends.first.is_family?   # true/false
+For example, maybe some books are your favorites.
 
-As you create relationship-specific fields, run this generator:
-  script/generate acts_as_relationable is_family:boolean family_name:string
+Run the generator first
+  script/generate acts_as_relationable favorite:boolean why_favorite:string
   rake db:migrate
+  
+In the model
+  acts_as_relationable :books, :fields => [ :favorite, :why_favorite ]
+  
+  self.books.first.favorite = true
+  self.books.first.why_favorite = 'Because its cool'
+  self.books.first.save

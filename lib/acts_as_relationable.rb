@@ -24,6 +24,8 @@ module ActiveRecord
             options = types.last.respond_to?(:keys) ? types.pop : {}
             fields  = options[:fields] || []
             fields  = [ fields ] unless fields.respond_to?(:flatten)
+            
+            before_save :update_relationship_fields
 
             has_many :parent_relationships, :class_name => 'Relationship', :as => :child
             has_many :child_relationships,  :class_name => 'Relationship', :as => :parent
@@ -50,6 +52,17 @@ module ActiveRecord
                 end
               end
             end
+            
+            fields.each do |field|
+              self.class_eval do
+                define_method field.to_s + '=' do |value|
+                  modified = read_attribute(:modified_relationship_fields) || []
+                  modified << field
+                  write_attribute :modified_relationship_fields, modified
+                  write_attribute field, value
+                end
+              end
+            end
           end
           
           include ActiveRecord::Acts::Relationable::InstanceMethods
@@ -61,6 +74,20 @@ module ActiveRecord
       end
 
       module InstanceMethods
+        def update_relationship_fields
+          Relationship.find(:all,
+            :conditions => [
+              '(parent_type = ? AND parent_id = ?) OR (child_type = ? AND child_id = ?)',
+              self.class.to_s, self.id, self.class.to_s, self.id
+            ]
+          ).each do |r|
+            read_attribute(:modified_relationship_fields).each do |field|
+              r[field] = self[field]
+            end
+            r.save
+          end
+          write_attribute :modified_relationship_fields, nil
+        end
       end
     end
   end
