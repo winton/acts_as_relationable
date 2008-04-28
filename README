@@ -22,7 +22,7 @@ In the controller
 Sometimes you have data that is unique to the relationship.
 For example, maybe some books are your favorites.
 
-Run the generator first
+Run the generator again
   script/generate acts_as_relationable favorite:boolean why_favorite:string
   rake db:migrate
   
@@ -32,3 +32,6 @@ In the model
   self.books.first.favorite = true
   self.books.first.why_favorite = 'Because its cool'
   self.books.first.save
+
+Other options
+  acts_as_relationable :books, :unique => true    # Only unique records allowed in collection

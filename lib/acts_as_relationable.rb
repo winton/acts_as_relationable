@@ -19,7 +19,8 @@ module ActiveRecord
               belongs_to "child_#{m}".intern,  :foreign_key => 'child_id',  :class_name => m.camelize
             end
           else
-            options = types.last.respond_to?(:keys) ? types.pop : {}
+            options = types.extract_options!
+            unique  = options[:unique]
             fields  = options[:fields] || []
             fields  = [ fields ] unless fields.respond_to?(:flatten)
             
@@ -33,11 +34,11 @@ module ActiveRecord
               select = "#{type}.*, relationships.id AS relationship_id#{fields.empty? ? '' : ', '}" + fields.collect { |f| "relationships.#{f}" }.join(', ')
             
               has_many 'parent_' + type,
-                :select  => select, :through => :parent_relationships,
+                :select  => select, :through => :parent_relationships, :unique => unique,
                 :source => :parent, :source_type => type.singularize.camelize
             
               has_many 'child_' + type,
-                :select  => select, :through => :child_relationships,
+                :select  => select, :through => :child_relationships,  :unique => unique,
                 :source => :child,  :source_type => type.singularize.camelize
               
               self.class_eval do
@@ -56,7 +57,7 @@ module ActiveRecord
                 define_method field.to_s + '=' do |value|
                   modified = read_attribute(:modified_relationship_fields) || []
                   modified << field
-                  write_attribute :modified_relationship_fields, modified
+                  write_attribute :modified_relationship_fields, modified.uniq
                   write_attribute field, value
                 end
                 define_method field.to_s do
