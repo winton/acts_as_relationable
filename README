@@ -1,37 +1,71 @@
-Automatically creates a habtm relationship with optional relationship-specific fields.
+== acts_as_relationable by Winton Welsh <win@sumapp.com>
 
-What's so great about this?
-  - habtm relationships using :through are a bitch
-  - all your relationships use a single table
-  - clean models
+  Automatically creates habtm :through relationships using using a single join table across multiple models.
 
-Do this before anything
-  script/generate acts_as_relationable
-  rake db:migrate
 
-In the model
-  acts_as_relationable :books   # (there should be a Book model)
+== What's so great about this?
+
+  - can be self referential
+  - all relationships use a single join table
+  - easily define relationship-specific fields
+
+
+== Install
   
-In the controller
+  (From RAILS_ROOT)
+    git submodule add git@github.com:winton/acts_as_relationable.git vendor/plugins/acts_as_relationable
+    script/generate acts_as_relationable
+    rake db:migrate
+
+
+== Model
+
+  class User < ActiveRecord::Base
+    acts_as_relationable :books
+  end
+  
+  class Book < ActiveRecord::Base
+    acts_as_relationable :users
+  end
+  
+  
+== Controller
+
   b = Book.find :first
   u = User.find :first
   u.books << b
-  u.books # [ b ]
-  b.users # [ u ], assuming you put acts_as_relationable(:users) in your Book model
+  u.books  # [ b ]
+  b.users  # [ u ]
   
-Sometimes you have data that is unique to the relationship.
-For example, maybe some books are your favorites.
 
-Run the generator again
-  script/generate acts_as_relationable favorite:boolean why_favorite:string
-  rake db:migrate
-  
-In the model
-  acts_as_relationable :books, :fields => [ :favorite, :why_favorite ]
-  
-  self.books.first.favorite = true
-  self.books.first.why_favorite = 'Because its cool'
-  self.books.first.save
+== Self referential relationships
 
-Other options
-  acts_as_relationable :books, :unique => true    # Only unique records allowed in collection
+  class User < ActiveRecord::Base
+    acts_as_relationable :users
+    
+    u = User.create
+    self.child_users << u
+    u.parent_users  # == self
+  end
+
+
+== Relationship-specific fields
+
+  In the example directly above, what if some users are 'favorite' and 'extra favorite'?
+  
+  Run the generator
+    script/generate acts_as_relationable favorite:boolean extra_favorite:boolean
+    rake db:migrate
+  
+  class User < ActiveRecord::Base
+    acts_as_relationable :users, :fields => [ :favorite, :extra_favorite ]
+    
+    self.child_users.first.update_attribute :extra_favorite, true
+    self.child_users.first.favorite?        # == false
+    self.child_users.first.extra_favorite?  # == true
+  end
+
+
+== Unique records only
+
+  acts_as_relationable :books, :unique => true
