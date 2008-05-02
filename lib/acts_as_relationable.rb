@@ -34,11 +34,11 @@ module ActiveRecord
               select = "#{type}.*, relationships.id AS relationship_id#{fields.empty? ? '' : ', '}" + fields.collect { |f| "relationships.#{f}" }.join(', ')
             
               has_many 'parent_' + type,
-                :select  => select, :through => :parent_relationships, :unique => unique,
+                :select  => select, :through => :parent_relationships, :uniq => unique,
                 :source => :parent, :source_type => type.singularize.camelize
             
               has_many 'child_' + type,
-                :select  => select, :through => :child_relationships,  :unique => unique,
+                :select  => select, :through => :child_relationships,  :uniq => unique,
                 :source => :child,  :source_type => type.singularize.camelize
               
               self.class_eval do
@@ -77,7 +77,8 @@ module ActiveRecord
 
       module InstanceMethods
         def save_relationship_fields
-          r = Relationship.find self.relationship_id          
+          return unless read_attribute(:relationship_id)
+          r = Relationship.find self.relationship_id
           read_attribute(:modified_relationship_fields).each do |field|
             r[field] = self[field]
           end
