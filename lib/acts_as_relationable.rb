@@ -77,7 +77,7 @@ module ActiveRecord
 
       module InstanceMethods
         def save_relationship_fields
-          return unless read_attribute(:relationship_id)
+          return unless read_attribute(:relationship_id) && read_attribute(:modified_relationship_fields)
           r = Relationship.find self.relationship_id
           read_attribute(:modified_relationship_fields).each do |field|
             r[field] = self[field]
