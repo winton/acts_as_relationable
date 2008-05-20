@@ -34,12 +34,26 @@ module ActiveRecord
               select = "#{type}.*, relationships.id AS relationship_id#{fields.empty? ? '' : ', '}" + fields.collect { |f| "relationships.#{f}" }.join(', ')
             
               has_many 'parent_' + type,
-                :select  => select, :through => :parent_relationships, :uniq => unique,
-                :source => :parent, :source_type => type.singularize.camelize
+                :select => select,  :through => :parent_relationships, :uniq => unique,
+                :source => :parent, :source_type => type.singularize.camelize do
+                  fields.each do |field|
+                    define_method field.to_s.pluralize do |value|
+                      value ||= 1
+                      find :all, :conditions => [ "relationships.#{field} = ?", value ]
+                    end
+                  end
+                end
             
               has_many 'child_' + type,
-                :select  => select, :through => :child_relationships,  :uniq => unique,
-                :source => :child,  :source_type => type.singularize.camelize
+                :select => select, :through => :child_relationships, :uniq => unique,
+                :source => :child, :source_type => type.singularize.camelize do
+                  fields.each do |field|
+                    define_method field.to_s.pluralize do |value|
+                      value ||= 1
+                      find :all, :conditions => [ "relationships.#{field} = ?", value ]
+                    end
+                  end
+                end
               
               self.class_eval do
                 define_method type do
