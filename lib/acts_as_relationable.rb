@@ -21,6 +21,8 @@ module ActiveRecord
           else
             options = types.extract_options!
             unique  = options[:unique]
+            sql     = options[:conditions]
+            table   = options[:table]
             fields  = options[:fields] || []
             fields  = [ fields ] unless fields.respond_to?(:flatten)
             
@@ -31,11 +33,12 @@ module ActiveRecord
           
             types.each do |type|
               type   = type.to_s
-              select = "#{type}.*, relationships.id AS relationship_id#{fields.empty? ? '' : ', '}" + fields.collect { |f| "relationships.#{f}" }.join(', ')
+              table  = table || type
+              select = "#{table}.*, relationships.id AS relationship_id#{fields.empty? ? '' : ', '}" + fields.collect { |f| "relationships.#{f}" }.join(', ')
             
               has_many 'parent_' + type,
-                :select => select,  :through => :parent_relationships, :uniq => unique,
-                :source => :parent, :source_type => type.singularize.camelize do
+                :select => select,  :conditions => sql,           :through     => :parent_relationships, :uniq => unique,
+                :source => :parent, :class_name => type.classify, :source_type => table.classify do
                   fields.each do |field|
                     define_method field.to_s.pluralize do |value|
                       value ||= 1
@@ -45,8 +48,8 @@ module ActiveRecord
                 end
             
               has_many 'child_' + type,
-                :select => select, :through => :child_relationships, :uniq => unique,
-                :source => :child, :source_type => type.singularize.camelize do
+                :select => select,  :conditions => sql,           :through     => :child_relationships, :uniq => unique,
+                :source => :child,  :class_name => type.classify, :source_type => table.classify do
                   fields.each do |field|
                     define_method field.to_s.pluralize do |value|
                       value ||= 1
@@ -57,7 +60,7 @@ module ActiveRecord
               
               self.class_eval do
                 define_method type do
-                  if self.class.to_s < type.singularize.camelize
+                  if (read_attribute(:type) || self.class.to_s) < type.classify
                     eval "self.child_#{type}"
                   else
                     eval "self.parent_#{type}"
