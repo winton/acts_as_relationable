@@ -1,7 +1,7 @@
 acts_as_relationable
 ====================
 
-	Automatically creates habtm :through relationships across multiple models using using a single join table.
+Automatically creates habtm :through relationships across multiple models using using a single join table.
 
 
 What's so great about this?
