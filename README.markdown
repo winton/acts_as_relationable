@@ -3,14 +3,9 @@ acts_as_relationable
 
 Automatically creates habtm :through relationships across multiple models using using a single join table.
 
-
-What's so great about this?
----------------------------
-
 * Can be self referential
-* All relationships use a single join table
-* Easily define relationship-specific fields
-* STI compatible
+* Quickly define relationship-specific fields
+* Create relationships between STI models
 
 
 Install
@@ -67,11 +62,11 @@ What if some users are 'favorite' and 'extra favorite'?
 
 ### Model
 	
-class User < ActiveRecord::Base
-	acts_as_relationable :users, :fields => [ :favorite, :extra_favorite ]
+	class User < ActiveRecord::Base
+		acts_as_relationable :users, :fields => [ :favorite, :extra_favorite ]
 	
-	self.child_users.first.update_attribute :extra_favorite, true
-	self.child_users.first.favorite?				# == false
-	self.child_users.first.extra_favorite?	# == true
-	self.child_users.favorites(false)			 # [ self.child_users.first ]
-end
+		self.child_users.first.update_attribute :extra_favorite, true
+		self.child_users.first.favorite?				# == false
+		self.child_users.first.extra_favorite?	# == true
+		self.child_users.favorites(false)				# [ self.child_users.first ]
+	end
