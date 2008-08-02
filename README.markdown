@@ -53,20 +53,20 @@ Model
 Relationship-specific fields
 ----------------------------
 
-What if some users are 'favorite' and 'extra favorite'?
+I want users to be able to 'friend' and 'best friend' each other.
 	
 ### Run the generator
 
-	script/generate acts_as_relationable favorite:boolean extra_favorite:boolean
+	script/generate acts_as_relationable friend:boolean best_friend:boolean
 	rake db:migrate
 
 ### Model
 	
 	class User < ActiveRecord::Base
-		acts_as_relationable :users, :fields => [ :favorite, :extra_favorite ]
+		acts_as_relationable :users, :fields => [ :friend, :best_friend ]
 	
-		self.child_users.first.update_attribute :extra_favorite, true
-		self.child_users.first.favorite?				# == false
-		self.child_users.first.extra_favorite?	# == true
-		self.child_users.favorites(false)				# [ self.child_users.first ]
+		self.child_users.first.update_attribute :friend, true
+		self.child_users.first.friend?				# == true
+		self.child_users.first.best_friend?		# == false
+		self.child_users.friends							# [ self.child_users.first ]
 	end
