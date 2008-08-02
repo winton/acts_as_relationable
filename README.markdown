@@ -66,7 +66,7 @@ I want users to be able to 'friend' and 'best friend' each other.
 		acts_as_relationable :users, :fields => [ :friend, :best_friend ]
 	
 		self.child_users.first.update_attribute :friend, true
-		self.child_users.first.friend?				# == true
-		self.child_users.first.best_friend?		# == false
-		self.child_users.friends							# [ self.child_users.first ]
+		self.child_users.first.friend?        # == true
+		self.child_users.first.best_friend?   # == false
+		self.child_users.friends              # [ self.child_users.first ]
 	end
