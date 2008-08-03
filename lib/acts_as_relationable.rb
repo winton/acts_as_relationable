@@ -1,6 +1,6 @@
 module ActiveRecord
-  module Acts #:nodoc:
-    module Relationable #:nodoc:
+  module Acts
+    module Relationable
       
       MODELS = Dir[RAILS_ROOT + "/app/models/*.rb"].collect { |f| File.basename f, '.rb' }
       
@@ -37,7 +37,7 @@ module ActiveRecord
               select = "#{table}.*, relationships.id AS relationship_id#{fields.empty? ? '' : ', '}" + fields.collect { |f| "relationships.#{f}" }.join(', ')
             
               has_many 'parent_' + type,
-                :select => select,  :conditions => sql,           :through     => :parent_relationships, :uniq => unique,
+                :select => select,  :conditions => sql,           :through     => :parent_relationships,
                 :source => :parent, :class_name => type.classify, :source_type => table.classify do
                   fields.each do |field|
                     define_method field.to_s.pluralize do |value|
@@ -48,7 +48,7 @@ module ActiveRecord
                 end
             
               has_many 'child_' + type,
-                :select => select,  :conditions => sql,           :through     => :child_relationships, :uniq => unique,
+                :select => select,  :conditions => sql,           :through     => :child_relationships,
                 :source => :child,  :class_name => type.classify, :source_type => table.classify do
                   fields.each do |field|
                     define_method field.to_s.pluralize do |value|
