@@ -70,3 +70,6 @@ I want users to be able to 'friend' and 'best friend' each other.
 		self.child_users.first.best_friend?   # == false
 		self.child_users.friends              # [ self.child_users.first ]
 	end
+
+
+##### Copyright (c) 2008 Winton Welsh, released under the MIT license
