@@ -20,7 +20,6 @@ module ActiveRecord
             end
           else
             options = types.extract_options!
-            unique  = options[:unique]
             sql     = options[:conditions]
             table   = options[:table]
             fields  = options[:fields] || []
