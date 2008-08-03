@@ -11,7 +11,7 @@ Automatically creates habtm :through relationships across multiple models using 
 Install
 -------
 	
-### From RAILS_ROOT
+### From your application directory
 
 	git submodule add git@github.com:winton/acts_as_relationable.git vendor/plugins/acts_as_relationable
 	script/generate acts_as_relationable
