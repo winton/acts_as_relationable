@@ -48,7 +48,7 @@ Self referential relationships
 	end
 	
 	u = User.create
-	self.child_users \<\< u
+	self.child_users <span><<</span> u
 	u.parent_users	# == self
 
 
