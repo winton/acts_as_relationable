@@ -13,7 +13,7 @@ Install
 	
 ### From your application directory
 
-	git submodule add git@github.com:winton/acts_as_relationable.git vendor/plugins/acts_as_relationable
+	git submodule add git://github.com:winton/acts_as_relationable.git vendor/plugins/acts_as_relationable
 	script/generate acts_as_relationable
 	rake db:migrate
 
