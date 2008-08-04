@@ -18,6 +18,18 @@ Install
 	rake db:migrate
 
 
+Model
+-----
+
+	class User < ActiveRecord::Base
+	  acts_as_relationable :books
+	end
+
+	class Book < ActiveRecord::Base
+	  acts_as_relationable :users
+	end
+
+
 Controller
 ----------
 
@@ -27,22 +39,12 @@ Controller
 	u.books	# [ b ]
 	b.users	# [ u ]
 
-
-Model
------
+	
+Self referential relationships
+------------------------------
 
 	class User < ActiveRecord::Base
-		acts_as_relationable :books
-	end
-	
-	class Book < ActiveRecord::Base
-		acts_as_relationable :users
-	end
-	
-### Self referential relationships
-
-	class User < ActiveRecord::Base
-		acts_as_relationable :users
+	  acts_as_relationable :users
 	end
 	
 	u = User.create
@@ -53,7 +55,7 @@ Model
 Relationship-specific fields
 ----------------------------
 
-I want users to be able to 'friend' and 'best friend' each other.
+Say you want users to be able to 'friend' and 'best friend' each other.
 	
 ### Run the generator
 
@@ -63,12 +65,12 @@ I want users to be able to 'friend' and 'best friend' each other.
 ### Model
 	
 	class User < ActiveRecord::Base
-		acts_as_relationable :users, :fields => [ :friend, :best_friend ]
+	  acts_as_relationable :users, :fields => [ :friend, :best_friend ]
 	
-		self.child_users.first.update_attribute :friend, true
-		self.child_users.first.friend?        # == true
-		self.child_users.first.best_friend?   # == false
-		self.child_users.friends              # [ self.child_users.first ]
+	  self.child_users.first.update_attribute :friend, true
+	  self.child_users.first.friend?        # == true
+	  self.child_users.first.best_friend?   # == false
+	  self.child_users.friends              # [ self.child_users.first ]
 	end
 
 
