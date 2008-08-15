@@ -24,7 +24,7 @@ Install
 
 ## Usage
 
-<http://github.com/winton/acts_as_relationable/wikis>
+See the wiki(http://github.com/winton/acts_as_relationable/wikis) for usage examples.
 
 
 ##### Copyright &copy; 2008 Winton Welsh <mail@wintoni.us>
