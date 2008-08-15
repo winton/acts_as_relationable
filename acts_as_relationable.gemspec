@@ -16,5 +16,18 @@ Gem::Specification.new do |s|
   s.extra_rdoc_files = ['README.rdoc', 'MIT-LICENSE']
   s.add_dependency 'activerecord', ['>= 2.1.0']
   
-  s.files = %w(generators/acts_as_relationable/* generators/acts_as_relationable/templates/migrate/* generators/acts_as_relationable/templates/models/* init.rb lib/* MIT-LICENSE README.rdoc)
+  s.files = %w(generators/
+    generators/acts_as_relationable/
+    generators/acts_as_relationable/acts_as_relationable_generator.rb
+    generators/acts_as_relationable/templates/
+    generators/acts_as_relationable/templates/migrate/
+    generators/acts_as_relationable/templates/migrate/add_fields_to_relationships.rb.erb
+    generators/acts_as_relationable/templates/migrate/create_relationships.rb.erb
+    generators/acts_as_relationable/templates/models/
+    generators/acts_as_relationable/templates/models/relationship.rb
+    init.rb
+    lib/
+    lib/acts_as_relationable.rb
+    MIT-LICENSE
+    README.rdoc)
 end
