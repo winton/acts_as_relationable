@@ -2,8 +2,9 @@
 
 Automatically creates habtm :through relationships across multiple models using using a single join table.
 
-Installation:: http://github.com/winton/acts_as_relationable/wikis/installation
-Usage:: 			 http://github.com/winton/acts_as_relationable/wikis/usage
+{Installation}[http://github.com/winton/acts_as_relationable/wikis/installation]
+{Usage}[http://github.com/winton/acts_as_relationable/wikis/usage]
+
 
 == Features
 
@@ -11,4 +12,5 @@ Usage:: 			 http://github.com/winton/acts_as_relationable/wikis/usage
 * Quickly define relationship-specific fields
 * Create relationships between STI models
 
-==== Copyright (c) 2008 Winton Welsh <mail@wintoni.us>
+
+===== Copyright (c) 2008 Winton Welsh <mail@wintoni.us>
