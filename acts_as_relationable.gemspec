@@ -10,10 +10,7 @@ Gem::Specification.new do |s|
   s.email    = 'mail@wintoni.us'
   s.homepage = 'http://github.com/winton/acts_as_relationable/wikis'
   
-  s.has_rdoc = true
-  s.rdoc_options = ['--main', 'README.rdoc']
-  s.rdoc_options << '--inline-source' << '--charset=UTF-8'
-  s.extra_rdoc_files = ['README.rdoc', 'MIT-LICENSE']
+  s.has_rdoc = false
   s.add_dependency 'activerecord', ['>= 2.1.0']
   
   s.files = %w(generators/
@@ -29,5 +26,5 @@ Gem::Specification.new do |s|
     lib/
     lib/acts_as_relationable.rb
     MIT-LICENSE
-    README.rdoc)
+    README.markdown)
 end
