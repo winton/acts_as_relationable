@@ -39,8 +39,8 @@ module ActiveRecord
                 :select => select,  :conditions => sql,           :through     => :parent_relationships,
                 :source => :parent, :class_name => type.classify, :source_type => table.classify do
                   fields.each do |field|
-                    define_method field.to_s.pluralize do |value|
-                      value ||= 1
+                    define_method field.to_s.pluralize do |*args|
+                      value = args[0] || 1
                       find :all, :conditions => [ "relationships.#{field} = ?", value ]
                     end
                   end
@@ -50,16 +50,16 @@ module ActiveRecord
                 :select => select,  :conditions => sql,           :through     => :child_relationships,
                 :source => :child,  :class_name => type.classify, :source_type => table.classify do
                   fields.each do |field|
-                    define_method field.to_s.pluralize do |value|
-                      value ||= 1
+                    define_method field.to_s.pluralize do |*args|
+                      value = args[0] || 1
                       find :all, :conditions => [ "relationships.#{field} = ?", value ]
                     end
                   end
                 end
               
               self.class_eval do
-                define_method type do
-                  if (read_attribute(:type) || self.class.to_s) < type.classify
+                define_method type do |*args|
+                  if (read_attribute(:type) || self.class.to_s) < (args.empty? ? type.classify : args[0].to_s)
                     eval "self.child_#{type}"
                   else
                     eval "self.parent_#{type}"
