@@ -6,7 +6,7 @@ Gem::Specification.new do |s|
   s.summary = "Quick and easy habtm :through relationships in Rails"
   s.description = "A Rails plugin that allows you to create habtm :through relationships across multiple models using using a single join table."
   
-  s.authors  = ['Winton Welsh']
+  s.author   = 'Winton Welsh'
   s.email    = 'mail@wintoni.us'
   s.homepage = 'http://github.com/winton/acts_as_relationable/wikis'
   
