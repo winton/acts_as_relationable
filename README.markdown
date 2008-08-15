@@ -22,8 +22,9 @@ Install
 	rake db:migrate
 
 
-## [Usage](http://github.com/winton/acts_as_relationable/wikis)
+## Usage
+
+<http://github.com/winton/acts_as_relationable/wikis>
 
 
-* * *
 ##### Copyright &copy; 2008 Winton Welsh <mail@wintoni.us>
