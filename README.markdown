@@ -22,10 +22,7 @@ Install
 	rake db:migrate
 
 
-Wiki
-----
-
-### [Usage](http://github.com/winton/acts_as_relationable/wikis/usage)
+## [Usage](http://github.com/winton/acts_as_relationable/wikis/usage)
 
 
-##### Copyright (c) 2008 Winton Welsh <mail@wintoni.us>
+##### Copyright &copy; 2008 Winton Welsh <mail@wintoni.us>
