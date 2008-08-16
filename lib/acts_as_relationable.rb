@@ -82,8 +82,8 @@ module ActsAsRelationable
         end
       end
       
-      include ActiveRecord::Acts::Relationable::InstanceMethods
-      extend  ActiveRecord::Acts::Relationable::SingletonMethods
+      include ActsAsRelationable::InstanceMethods
+      extend  ActsAsRelationable::SingletonMethods
     end
   end
 
