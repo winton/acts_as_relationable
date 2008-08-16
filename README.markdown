@@ -15,9 +15,14 @@ Features
 Install
 -------
 
+	gem install winton-acts_as_relationable
+
+### Add to `environment.rb`
+
+	config.gem 'winton-acts_as_relationable', :lib => 'acts_as_relationable', :source => 'http://gems.github.com'
+
 ### From your application directory
 
-	gem install winton-acts_as_relationable
 	script/generate acts_as_relationable
 	rake db:migrate
 
@@ -28,4 +33,4 @@ Usage
 [Check out the wiki](http://github.com/winton/acts_as_relationable/wikis) for usage examples.
 
 
-##### Copyright &copy; 2008 [Winton Welsh](mail@wintoni.us)
+##### Copyright &copy; 2008 [Winton Welsh](mailto:mail@wintoni.us)
