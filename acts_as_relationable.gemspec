@@ -1,6 +1,6 @@
 Gem::Specification.new do |s|
   s.name    = 'acts_as_relationable'
-  s.version = '1.0'
+  s.version = '1.0.1'
   s.date    = '2008-08-15'
   
   s.summary = "Quick and easy habtm :through relationships in Rails"
