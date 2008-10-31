@@ -23,8 +23,6 @@ module ActsAsRelationable
         table   = options[:table]
         fields  = options[:fields] || []
         fields  = [ fields ] unless fields.respond_to?(:flatten)
-        
-        before_save :save_relationship_fields
 
         has_many :parent_relationships, :class_name => 'Relationship', :as => :child
         has_many :child_relationships,  :class_name => 'Relationship', :as => :parent
@@ -57,6 +55,7 @@ module ActsAsRelationable
             end
           
           self.class_eval do
+            # Records reader
             define_method type do |*args|
               if (read_attribute(:type) || self.class.to_s) < (args.empty? ? type.classify : args[0].to_s)
                 eval "self.child_#{type}"
@@ -68,6 +67,12 @@ module ActsAsRelationable
         end
         
         fields.each do |field|
+          # Relationship field reader
+          define_method field.to_s do
+            read_attribute(field) || nil
+          end
+          
+          # Relationship field writer
           self.class_eval do
             define_method field.to_s + '=' do |value|
               modified = read_attribute(:modified_relationship_fields) || []
@@ -75,15 +80,15 @@ module ActsAsRelationable
               write_attribute :modified_relationship_fields, modified.uniq
               write_attribute field, value
             end
-            define_method field.to_s do
-              read_attribute(field) || nil
-            end
           end
         end
       end
       
-      include ActsAsRelationable::InstanceMethods
-      extend  ActsAsRelationable::SingletonMethods
+      unless self.respond_to?(:save_relationship_fields)
+        include ActsAsRelationable::InstanceMethods
+        before_save :save_relationship_fields
+      end
+      extend ActsAsRelationable::SingletonMethods
     end
   end
 
@@ -91,6 +96,7 @@ module ActsAsRelationable
   end
 
   module InstanceMethods
+    # Before save
     def save_relationship_fields
       return unless read_attribute(:relationship_id) && read_attribute(:modified_relationship_fields)
       r = Relationship.find self.relationship_id
