@@ -1,7 +1,7 @@
 Gem::Specification.new do |s|
   s.name    = 'acts_as_relationable'
-  s.version = '1.0.3'
-  s.date    = '2008-08-16'
+  s.version = '1.1'
+  s.date    = '2008-11-26'
   
   s.summary = "Quick and easy habtm :through relationships in Rails"
   s.description = "A Rails plugin that allows you to create habtm :through relationships across multiple models using using a single join table."
