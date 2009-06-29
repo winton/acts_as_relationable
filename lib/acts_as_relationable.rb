@@ -38,7 +38,7 @@ module AppTower
                 fields.each do |field|
                   define_method field.to_s.pluralize do |*args|
                     value = args[0] || 1
-                    find :all, :conditions => [ "relationships.#{field} = ?", value ]
+                    scoped :conditions => [ "relationships.#{field} = ?", value ]
                   end
                 end
               end
@@ -49,7 +49,7 @@ module AppTower
                 fields.each do |field|
                   define_method field.to_s.pluralize do |*args|
                     value = args[0] || 1
-                    find :all, :conditions => [ "relationships.#{field} = ?", value ]
+                    scoped :conditions => [ "relationships.#{field} = ?", value ]
                   end
                 end
               end
